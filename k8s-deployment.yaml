@@ -1,0 +1,79 @@
+# ============================================================================
+# Kubernetes Deployment and Service Configuration for Minikube
+# ============================================================================
+# This file contains both Deployment and Service configurations in a single file.
+# 
+# Deployment:
+#   - Configures 2 replicas for high availability
+#   - Sets memory requests (256Mi) and limits (512Mi) for resource management
+#   - Includes health checks (liveness and readiness probes)
+#
+# Service (NodePort):
+#   - Uses NodePort type to expose the service externally
+#   - NodePort is used for Minikube because it allows direct access to the service
+#     from your local machine without requiring a LoadBalancer (which requires
+#     cloud provider support)
+#   - Accessible via: minikube service iris-ml-service --url
+#
+# Usage:
+#   kubectl apply -f k8s-deployment.yaml
+#   kubectl get deployments,services
+#   minikube service iris-ml-service --url
+# ============================================================================
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: iris-ml-api
+  labels:
+    app: iris-ml-api
+spec:
+  replicas: 2 # number of replicas of the deployment as per the load requirements
+  selector:
+    matchLabels:
+      app: iris-ml-api
+  template:
+    metadata:
+      labels:
+        app: iris-ml-api
+    spec:
+      containers:
+      - name: iris-ml-api
+        image: iris-ml-model:latest
+        imagePullPolicy: Never  # Use local image for Minikube
+        ports:
+        - containerPort: 8000
+          name: http
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+        livenessProbe: # check if the container is running and healthy / optional
+          httpGet:
+            path: /
+            port: 8000
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 8000
+          initialDelaySeconds: 5
+          periodSeconds: 5
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: iris-ml-service
+spec:
+  type: NodePort
+  selector:
+    app: iris-ml-api
+  ports:
+    - protocol: TCP
+      port: 8000
+      targetPort: 8000 # same as the port in the container/ optional 
+      nodePort: 30080 # port on the node that will be used to access the service / optional
