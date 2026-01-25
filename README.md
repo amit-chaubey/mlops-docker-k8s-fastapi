@@ -236,8 +236,10 @@ spec:
     spec:
       containers:
       - name: iris-ml-api
-        image: iris-ml-model:latest
-        imagePullPolicy: Never  # Use local image
+        # If using Option A (Docker Hub): use akatyayana/iris-ml-model:latest
+        # If using Option B (local build): use iris-ml-model:latest and set imagePullPolicy: Never
+        image: akatyayana/iris-ml-model:latest
+        imagePullPolicy: IfNotPresent  # Use IfNotPresent for Docker Hub, or Never for local builds
         ports:
         - containerPort: 8000
         resources:
