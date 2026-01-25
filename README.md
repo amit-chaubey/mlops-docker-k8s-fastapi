@@ -63,7 +63,6 @@ This script will:
 3. Train a Random Forest classifier with 100 estimators
 4. Evaluate model performance with accuracy and classification report
 5. Save the trained model as `iris_model.joblib`
-
 ### Using the Model Directly
 
 Load and use the saved model in Python:

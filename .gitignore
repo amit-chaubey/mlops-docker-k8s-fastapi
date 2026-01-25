@@ -65,3 +65,25 @@ htmlcov/
 # OS
 .DS_Store
 Thumbs.db
+
+
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Virtual environments
+venv/
+.env/
+.env.*
+
+# ML artifacts
+*.joblib
+*.pkl
+
+# OS
+.DS_Store
+
+# IDE
+.vscode/
