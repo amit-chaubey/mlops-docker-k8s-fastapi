@@ -616,9 +616,8 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 ## 👨‍💻 Author
 
-**Amit Chaubey**
-
-- GitHub: [@amit-chaubey](https://github.com/amit-chaubey)
+**Amit Choubey**
+- GitHub: [@amit-choubey](https://github.com/amit-chaubey)
 - Project: [MLOps Docker K8s FastAPI](https://github.com/amit-chaubey/mlops-docker-k8s-fastapi)
 
 ---
