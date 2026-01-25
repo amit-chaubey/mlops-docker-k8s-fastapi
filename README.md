@@ -13,6 +13,10 @@
 
 *From local development to cloud deployment - Everything you need for scalable ML inference*
 
+[![Docker Image](https://img.shields.io/badge/Docker%20Hub-amitchaubey%2Firis--ml--model-blue?logo=docker&style=for-the-badge)](https://hub.docker.com/r/amitchaubey/iris-ml-model)
+
+**[👉 Click here to use the Docker image directly on Docker Hub 👈](https://hub.docker.com/r/amitchaubey/iris-ml-model)**
+
 [Features](#-features) • [Quick Start](#-quick-start) • [Docker Hub](#-docker-hub) • [Kubernetes](#-kubernetes) • [AWS Deployment](#-aws-deployment)
 
 </div>
@@ -94,62 +98,35 @@ This is a **complete, enterprise-grade MLOps solution** for deploying machine le
 
 ## 🚀 Quick Start
 
-### Option 1: Use Pre-built Docker Image (Recommended)
+### Use Pre-built Docker Image (Recommended)
 
-The Docker image is **already available on Docker Hub**! No need to build anything.
+**[👉 Get the Docker image from Docker Hub 👈](https://hub.docker.com/r/amitchaubey/iris-ml-model)**
 
-```bash
-# Pull and run the pre-built image
-docker run -d -p 8000:8000 \
-  --name iris-ml-api \
-  amitchaubey/iris-ml-model:latest
-
-# Test the API
-curl http://localhost:8000/
-```
-
-### Option 2: Build from Source
+The Docker image is **ready to use** - just pull and run:
 
 ```bash
-# Clone the repository
-git clone https://github.com/amit-chaubey/mlops-docker-k8s-fastapi.git
-cd mlops-docker-k8s-fastapi
-
-# Build the Docker image
-docker build -t iris-ml-model:latest .
-
-# Run the container
-docker run -d -p 8000:8000 --name iris-api iris-ml-model:latest
+docker run -d -p 8000:8000 --name iris-ml-api amitchaubey/iris-ml-model:latest
 ```
+
+Test it: `curl http://localhost:8000/`
+
+**That's it!** Your ML API is running. Visit `http://localhost:8000/docs` for interactive API documentation.
 
 ---
 
 ## 🐳 Docker Hub
 
-### Pre-built Image Available!
+### [👉 Click to View & Use Docker Image on Docker Hub 👈](https://hub.docker.com/r/amitchaubey/iris-ml-model)
 
-Our Docker image is **publicly available** on Docker Hub and ready to use:
+**Quick Overview:**
+- **Image:** `amitchaubey/iris-ml-model:latest`
+- **Size:** ~2GB | **Base:** Python 3.11 | **Port:** 8000
+- **Status:** ✅ Production-ready, tested, and verified
 
-```bash
-# Pull the latest image
-docker pull amitchaubey/iris-ml-model:latest
-
-# Or use directly
-docker run -d -p 8000:8000 amitchaubey/iris-ml-model:latest
-```
-
-**Image Details:**
-- **Repository:** `amitchaubey/iris-ml-model`
-- **Tag:** `latest`
-- **Size:** ~2GB (includes Python 3.11 and all dependencies)
-- **Base Image:** `python:3.11`
-- **Port:** `8000`
-
-**Why use our pre-built image?**
-- ✅ No build time - instant deployment
-- ✅ Tested and verified
-- ✅ Production-ready configuration
-- ✅ Regular updates and security patches
+**Benefits:**
+- ✅ Instant deployment - no build time required
+- ✅ One-command setup: `docker run -d -p 8000:8000 amitchaubey/iris-ml-model:latest`
+- ✅ Ready for Kubernetes, AWS ECS, EKS, and more
 
 ---
 
