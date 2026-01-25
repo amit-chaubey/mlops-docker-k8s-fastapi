@@ -13,9 +13,9 @@
 
 *From local development to cloud deployment - Everything you need for scalable ML inference*
 
-[![Docker Image](https://img.shields.io/badge/Docker%20Hub-amitchaubey%2Firis--ml--model-blue?logo=docker&style=for-the-badge)](https://hub.docker.com/r/amitchaubey/iris-ml-model)
+[![Docker Image](https://img.shields.io/badge/Docker%20Hub-akatyayana%2Firis--ml--model-blue?logo=docker&style=for-the-badge)](https://hub.docker.com/r/akatyayana/iris-ml-model)
 
-**[👉 Click here to use the Docker image directly on Docker Hub 👈](https://hub.docker.com/r/amitchaubey/iris-ml-model)**
+**[👉 Click here to use the Docker image directly on Docker Hub 👈](https://hub.docker.com/r/akatyayana/iris-ml-model)**
 
 [Features](#-features) • [Quick Start](#-quick-start) • [Docker Hub](#-docker-hub) • [Kubernetes](#-kubernetes) • [AWS Deployment](#-aws-deployment)
 
@@ -100,12 +100,12 @@ This is a **complete, enterprise-grade MLOps solution** for deploying machine le
 
 ### Use Pre-built Docker Image (Recommended)
 
-**[👉 Get the Docker image from Docker Hub 👈](https://hub.docker.com/r/amitchaubey/iris-ml-model)**
+**[👉 Get the Docker image from Docker Hub 👈](https://hub.docker.com/r/akatyayana/iris-ml-model)**
 
 The Docker image is **ready to use** - just pull and run:
 
 ```bash
-docker run -d -p 8000:8000 --name iris-ml-api amitchaubey/iris-ml-model:latest
+docker run -d -p 8000:8000 --name iris-ml-api akatyayana/iris-ml-model:latest
 ```
 
 Test it: `curl http://localhost:8000/`
@@ -116,16 +116,16 @@ Test it: `curl http://localhost:8000/`
 
 ## 🐳 Docker Hub
 
-### [👉 Click to View & Use Docker Image on Docker Hub 👈](https://hub.docker.com/r/amitchaubey/iris-ml-model)
+### [👉 Click to View & Use Docker Image on Docker Hub 👈](https://hub.docker.com/r/akatyayana/iris-ml-model)
 
 **Quick Overview:**
-- **Image:** `amitchaubey/iris-ml-model:latest`
+- **Image:** `akatyayana/iris-ml-model:latest`
 - **Size:** ~2GB | **Base:** Python 3.11 | **Port:** 8000
 - **Status:** ✅ Production-ready, tested, and verified
 
 **Benefits:**
 - ✅ Instant deployment - no build time required
-- ✅ One-command setup: `docker run -d -p 8000:8000 amitchaubey/iris-ml-model:latest`
+- ✅ One-command setup: `docker run -d -p 8000:8000 akatyayana/iris-ml-model:latest`
 - ✅ Ready for Kubernetes, AWS ECS, EKS, and more
 
 ---
@@ -208,7 +208,7 @@ kubectl get nodes
 
 ```bash
 # Option A: Use pre-built image from Docker Hub
-minikube image pull amitchaubey/iris-ml-model:latest
+minikube image pull akatyayana/iris-ml-model:latest
 
 # Option B: Build image directly in Minikube
 eval $(minikube docker-env)
@@ -364,10 +364,10 @@ docker push \
 
 ```bash
 # Pull from Docker Hub
-docker pull amitchaubey/iris-ml-model:latest
+docker pull akatyayana/iris-ml-model:latest
 
 # Tag for ECR
-docker tag amitchaubey/iris-ml-model:latest \
+docker tag akatyayana/iris-ml-model:latest \
   <AWS_ACCOUNT_ID>.dkr.ecr.us-east-1.amazonaws.com/iris-ml-model:latest
 
 # Push to ECR
@@ -473,7 +473,7 @@ kubectl get pods
 kubectl get services
 
 # Get LoadBalancer URL
-kubectl get service iris-ml-service
+kubectl get service iris-ml-service -o wide
 ```
 
 ### Step 4: Test Production Deployment
@@ -602,7 +602,7 @@ mlops-iris-ml/
 
 | Environment | Command | Use Case |
 |------------|---------|----------|
-| **Local Docker** | `docker run -p 8000:8000 amitchaubey/iris-ml-model:latest` | Quick testing |
+| **Local Docker** | `docker run -p 8000:8000 akatyayana/iris-ml-model:latest` | Quick testing |
 | **Minikube** | `kubectl apply -f k8s-deployment.yaml` | Local K8s testing |
 | **AWS ECR + EKS** | Push to ECR → Deploy to EKS | Production deployment |
 
