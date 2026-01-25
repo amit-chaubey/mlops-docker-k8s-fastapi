@@ -1,0 +1,27 @@
+# ============================================================================
+# Kubernetes Service Minimum Required Configuration for Minikube
+# ============================================================================
+# This service file exposes the Iris ML API deployment using NodePort type,
+# which is suitable for local Minikube testing and development.
+#
+# Usage:
+#   kubectl apply -f svc.yaml
+#   kubectl get services
+#   minikube service iris-api-service --url
+#
+# Note: This service configuration is designed for Minikube local testing.
+# For production AWS EKS deployment, use LoadBalancer type in eks-deployment.yaml.
+# ============================================================================
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: iris-api-service
+spec:
+  type: NodePort
+  selector:
+    app: iris-api
+  ports:
+    - port: 8000
+      targetPort: 8000
+

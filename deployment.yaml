@@ -1,0 +1,37 @@
+# ============================================================================
+# Kubernetes Deployment Minimum Required Configuration for Minikube
+# ============================================================================
+# This deployment file is configured for local Kubernetes testing using Minikube.
+# It deploys the Iris ML API service with 2 replicas for high availability.
+# 
+# Usage:
+#   kubectl apply -f deployment.yaml
+#   kubectl get deployments
+#   kubectl get pods
+#
+# Note: This configuration is optimized for local Minikube environment.
+# For production AWS EKS deployment, use eks-deployment.yaml instead.
+# ============================================================================
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: iris-api 
+  labels:
+    app: iris-api
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: iris-api
+  template:
+    metadata:
+      labels:
+        app: iris-api
+    spec:
+      containers:
+        - name: iris-api
+          image: akatyayana/iris-ml-model:latest
+          ports:
+            - containerPort: 8000
+
