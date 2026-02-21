@@ -65,3 +65,17 @@ if st.button("Predict", type="primary"):
         st.error(f"API error: {e}")
 
 st.caption("Uses the Iris classifier API. Ensure the API is running at the URL shown in Settings.")
+
+# Footer
+version = os.getenv("APP_VERSION", "1.0.0")
+st.markdown("<hr>", unsafe_allow_html=True)
+st.markdown(
+    f"""
+    <div style="text-align: center; color: #6b7280; margin-top: 20px; font-size: 14px;">
+        <p><strong>HectorLabs</strong> · Built by <a href="https://www.amitchoubey.dev/" target="_blank" style="color: #6b7280;"><strong>Amit Choubey</strong></a></p>
+        <p><a href="https://www.hectorlabs.co.uk" target="_blank" style="color: #6b7280;">hectorlabs.co.uk</a></p>
+        <p style="margin-top: 12px;"><strong>Version:</strong> {version}</p>
+    </div>
+    """,
+    unsafe_allow_html=True,
+)
