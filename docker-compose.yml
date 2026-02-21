@@ -1,0 +1,28 @@
+# Full MLOps stack: FastAPI (model API) + Streamlit (UI)
+# API image from Docker Hub; UI built locally and uses API by service name.
+#
+# If you get "compose build requires buildx 0.17.0 or later" (e.g. Colima with older buildx),
+# run with legacy builder:  DOCKER_BUILDKIT=0 docker-compose up -d
+
+services:
+  iris-api:
+    image: akatyayana/iris-ml-model:latest
+    platform: linux/amd64   # Hub image is amd64; use emulation on ARM (e.g. Colima on Apple Silicon)
+    container_name: iris-api
+    ports:
+      - "8000:8000"
+    restart: unless-stopped
+
+  streamlit-ui:
+    build:
+      context: ./streamlit-ui
+      dockerfile: Dockerfile
+    container_name: iris-streamlit-ui
+    ports:
+      - "8501:8501"
+    environment:
+      # In Docker, UI must use service name (not localhost) to reach the API
+      IRIS_API_URL: http://iris-api:8000
+    depends_on:
+      - iris-api
+    restart: unless-stopped

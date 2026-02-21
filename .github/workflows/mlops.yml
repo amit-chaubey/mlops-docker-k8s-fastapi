@@ -1,0 +1,52 @@
+# MLOps pipeline: build, test, and validate Docker stack
+# - Uses FastAPI image from Docker Hub (akatyayana/iris-ml-model:latest)
+# - Builds Streamlit UI image and runs full stack with docker-compose
+# - Smoke-tests API and optionally UI
+
+name: MLOps Pipeline
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:  #  we are doing a 5 step process
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Run full stack (API from Hub + Streamlit built)
+        run: |
+          docker-compose up -d
+          echo "Waiting for services..."
+          sleep 10
+
+      - name: Smoke test API
+        run: |
+          curl -sf http://localhost:8000/ | grep -q "Welcome" || (echo "API health check failed"; exit 1)
+          curl -sf -X POST http://localhost:8000/predict \
+            -H "Content-Type: application/json" \
+            -d '{"sepal_length":5.1,"sepal_width":3.5,"petal_length":1.4,"petal_width":0.2}' | grep -q "setosa" || (echo "API predict failed"; exit 1)
+          echo "API smoke test passed"
+
+      - name: Smoke test Streamlit UI
+        run: |
+          code=$(curl -sf -o /dev/null -w "%{http_code}" http://localhost:8501) || code=000
+          if [ "$code" = "200" ]; then echo "Streamlit UI reachable"; else echo "Streamlit returned $code (may need more time)"; fi
+
+      - name: Tear down
+        if: always()
+        run: docker-compose down -v
+
+  # Optional: lint / unit test step (placeholder for future Python tests)
+  # lint:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #     - uses: actions/setup-python@v5
+  #       with:
+  #         python-version: "3.11"
+  #     - run: pip install -r requirements.txt && python -m pytest tests/ -v

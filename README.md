@@ -112,6 +112,22 @@ Test it: `curl http://localhost:8000/`
 
 **That's it!** Your ML API is running. Visit `http://localhost:8000/docs` for interactive API documentation.
 
+### Full stack (API + Streamlit UI) with Docker Compose
+
+Run both the FastAPI model API and the Streamlit UI in one go (API image from Docker Hub, UI built from `streamlit-ui/`):
+
+```bash
+docker-compose up -d
+```
+
+- **API:** http://localhost:8000/ (use trailing slash for root)  
+- **Streamlit UI:** http://localhost:8501  
+
+The UI is configured via `IRIS_API_URL` to call the API container by service name. See `streamlit-ui/README.md` for details.
+
+**Docker runtime:** Works with Docker Desktop, [Colima](https://github.com/abiosoft/colima), or any Docker-compatible context. Use `docker-compose` (with hyphen) if `docker compose` is not available (e.g. Colima with Compose V1).  
+**Colima / older Buildx:** If you see *"compose build requires buildx 0.17.0 or later"*, run with the legacy builder: `DOCKER_BUILDKIT=0 docker-compose up -d`
+
 ---
 
 ## 🐳 Docker Hub
@@ -334,7 +350,7 @@ This section covers the **complete production deployment** workflow from Docker 
 ### Prerequisites
 
 - AWS CLI configured (`aws configure`)
-- Docker installed
+- Docker (or Colima / other Docker-compatible runtime) installed
 - kubectl installed
 - AWS account with ECR and EKS access
 
@@ -561,17 +577,41 @@ Make predictions on Iris flower features.
 
 ```
 mlops-iris-ml/
-├── main.py                 # FastAPI application
-├── train_model.py         # Model training script
-├── create_model.py        # Minimal model creation
+├── main.py                 # FastAPI application (model API)
+├── train_model.py          # Model training script
+├── create_model.py         # Minimal model creation
 ├── requirements.txt        # Python dependencies
-├── Dockerfile             # Docker container config
-├── iris_model.joblib      # Trained model (generated)
-├── k8s-deployment.yaml    # Kubernetes deployment (create this)
-├── eks-deployment.yaml    # EKS deployment (create this)
-├── README.md              # This file
-└── README.txt             # Docker commands reference
+├── Dockerfile              # Docker image for FastAPI (pushed to Hub)
+├── docker-compose.yml      # Full stack: API + Streamlit UI
+├── iris_model.joblib       # Trained model (generated)
+├── k8s-deployment.yaml     # Kubernetes deployment (Minikube)
+├── eks-deployment.yaml     # EKS deployment
+├── streamlit-ui/           # Streamlit UI (calls FastAPI)
+│   ├── app.py              # Streamlit app (uses IRIS_API_URL in Docker)
+│   ├── Dockerfile          # Streamlit image
+│   └── requirements.txt
+├── .github/workflows/      # CI: separate pipelines per image + smoke test
+│   ├── build-push-api.yml     # Build & push API image (model-related paths only)
+│   ├── build-push-streamlit.yml  # Build & push Streamlit image (streamlit-ui/**)
+│   └── mlops.yml              # Smoke test (docker-compose)
+├── README.md               # This file
+└── README.txt              # Docker commands reference
 ```
+
+---
+
+## 🔄 Build and Push Images (CI)
+
+Two **separate pipelines**; each runs only when its paths change on push to **main/master**:
+
+| Pipeline | File | Triggers on |
+|----------|------|-------------|
+| **API/Model** | `build-push-api.yml` | `main.py`, `train_model.py`, `create_model.py`, `requirements.txt`, `Dockerfile`, `data/processed/**`, `data/cleaned/**`, `iris_model.joblib` |
+| **Streamlit UI** | `build-push-streamlit.yml` | `streamlit-ui/**` |
+
+K8s, observability, monitoring, `data/raw/**`, pipeline config, README, etc. do **not** trigger any image build.
+
+**Required repo secrets:** `DOCKERHUB_USERNAME`, `DOCKERHUB_TOKEN` (Settings → Secrets and variables → Actions).
 
 ---
 
