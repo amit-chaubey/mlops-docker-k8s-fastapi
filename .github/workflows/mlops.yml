@@ -1,6 +1,6 @@
 # MLOps pipeline: build, test, and validate Docker stack
 # - Uses FastAPI image from Docker Hub (akatyayana/iris-ml-model:latest)
-# - Builds Streamlit UI image and runs full stack with docker-compose
+# - Builds Streamlit UI image and runs full stack with docker compose (V2 on GitHub runners)
 # - Smoke-tests API and optionally UI
 
 name: MLOps Pipeline
@@ -20,7 +20,7 @@ jobs:
 
       - name: Run full stack (API from Hub + Streamlit built)
         run: |
-          docker-compose up -d
+          docker compose up -d
           echo "Waiting for services..."
           sleep 10
 
@@ -39,7 +39,7 @@ jobs:
 
       - name: Tear down
         if: always()
-        run: docker-compose down -v
+        run: docker compose down -v
 
   # Optional: lint / unit test step (placeholder for future Python tests)
   # lint:
