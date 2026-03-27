@@ -4,7 +4,13 @@
 #   - Job api-artifacts (after checkout) detects which .joblib files exist; publish jobs use those outputs.
 #   - Default API image: api paths changed AND iris_model.joblib present.
 #   - RF / SVC API images: api paths changed AND matching joblib present.
-#   - Streamlit image: streamlit-ui code paths (not README).
+#   - Streamlit image: streamlit-ui/app.py, streamlit-ui/Dockerfile, streamlit-ui/requirements.txt only.
+#
+# API path filter uses '!streamlit-ui/**' so bare 'Dockerfile' / 'requirements.txt' globs only match the
+# repo root (paths-filter matches those names in any folder without the exclusion).
+# UI-only commits → streamlit=true, api=false → only iris-streamlit-ui is built/pushed.
+#
+# Smoke test uses docker-compose.yml only (default API + UI). docker-compose.variants.yml is local/manual.
 #
 # Required secrets (publish jobs): DOCKERHUB_USERNAME, DOCKERHUB_TOKEN
 
@@ -73,6 +79,7 @@ jobs:
               - 'iris_model_svc.joblib'
               - 'data/processed/**'
               - 'data/cleaned/**'
+              - '!streamlit-ui/**'
             streamlit:
               - 'streamlit-ui/app.py'
               - 'streamlit-ui/Dockerfile'

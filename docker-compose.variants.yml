@@ -1,0 +1,33 @@
+# Optional: Random Forest + SVC API containers alongside the default API.
+# Usage from project root:
+#   docker compose -f docker-compose.yml -f docker-compose.variants.yml --profile variants up -d
+#
+# Requires RF/SVC images on Docker Hub (see CI publish jobs). Override images if your namespace differs.
+#
+# No fixed container_name: avoids "already in use" if an old container is left behind; DNS still uses
+# the service names below (iris-api-rf, iris-api-svc).
+
+services:
+  iris-api-rf:
+    profiles: [variants]
+    image: ${IRIS_RF_IMAGE:-akatyayana/iris-api:rf-latest}
+    platform: linux/amd64
+    expose:
+      - "8000"
+    restart: unless-stopped
+
+  iris-api-svc:
+    profiles: [variants]
+    image: ${IRIS_SVC_IMAGE:-akatyayana/iris-api:svc-latest}
+    platform: linux/amd64
+    expose:
+      - "8000"
+    restart: unless-stopped
+
+  streamlit-ui:
+    environment:
+      IRIS_MODEL_ENDPOINTS: '{"Default":"http://iris-api:8000","Random Forest":"http://iris-api-rf:8000","SVC":"http://iris-api-svc:8000"}'
+    depends_on:
+      - iris-api
+      - iris-api-rf
+      - iris-api-svc

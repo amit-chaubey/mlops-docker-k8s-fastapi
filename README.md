@@ -84,7 +84,7 @@ This is a **complete, enterprise-grade MLOps solution** for deploying machine le
          ▼
 ┌─────────────────┐      ┌─────────────────┐
 │  Minikube Test  │ ───▶ │  AWS ECR Push   │
-│  (Local K8s)    │      │  (Container Reg) │
+│  (Local K8s)    │      │  (Container Reg)│
 └─────────────────┘      └────────┬────────┘
                                    │
                                    ▼
@@ -123,7 +123,7 @@ docker-compose up -d
 - **API:** http://localhost:8000/ (use trailing slash for root)  
 - **Streamlit UI:** http://localhost:8501  
 
-The UI is configured via `IRIS_API_URL` to call the API container by service name. See `streamlit-ui/README.md` for details.
+The UI reads `IRIS_MODEL_ENDPOINTS` (JSON map of labels to API base URLs) or falls back to `IRIS_API_URL`. For **default + RF + SVC** backends together, use `docker-compose.variants.yml` and profile `variants` (see `streamlit-ui/README.md`).
 
 **Docker runtime:** Works with Docker Desktop, [Colima](https://github.com/abiosoft/colima), or any Docker-compatible context. Use `docker-compose` (with hyphen) if `docker compose` is not available (e.g. Colima with Compose V1).  
 **Colima / older Buildx:** If you see *"compose build requires buildx 0.17.0 or later"*, run with the legacy builder: `DOCKER_BUILDKIT=0 docker-compose up -d`
@@ -582,12 +582,13 @@ mlops-iris-ml/
 ├── create_model.py         # Minimal model creation
 ├── requirements.txt        # Python dependencies
 ├── Dockerfile              # Docker image for FastAPI (pushed to Hub)
-├── docker-compose.yml      # Full stack: API + Streamlit UI
+├── docker-compose.yml      # Full stack: default API + Streamlit UI
+├── docker-compose.variants.yml  # Optional: RF + SVC API services + multi-backend UI
 ├── iris_model.joblib       # Trained model (generated)
 ├── k8s-deployment.yaml     # Kubernetes deployment (Minikube)
 ├── eks-deployment.yaml     # EKS deployment
 ├── streamlit-ui/           # Streamlit UI (calls FastAPI)
-│   ├── app.py              # Streamlit app (uses IRIS_API_URL in Docker)
+│   ├── app.py              # Streamlit app (IRIS_MODEL_ENDPOINTS / IRIS_API_URL)
 │   ├── Dockerfile          # Streamlit image
 │   └── requirements.txt
 ├── .github/workflows/      # CI: test first; then conditional image push (mlops.yml)

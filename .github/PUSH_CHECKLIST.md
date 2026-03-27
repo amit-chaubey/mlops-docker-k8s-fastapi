@@ -11,9 +11,11 @@
 
 | Changed paths | Publish job (if file exists) |
 |---------------|------------------------------|
-| `main.py`, `train_model.py`, `create_model.py`, `requirements.txt`, `Dockerfile`, `data/processed/**`, `data/cleaned/**`, `iris_model*.joblib` | **API** images (see below) |
-| `streamlit-ui/app.py`, `streamlit-ui/Dockerfile`, `streamlit-ui/requirements.txt` | **Streamlit** `iris-streamlit-ui` |
-| `streamlit-ui/README.md`, `.github/**`, k8s yaml, root README, etc. | **No image** publish |
+| Root **API** files: `main.py`, `train_model.py`, `create_model.py`, root `requirements.txt`, root `Dockerfile`, `data/processed/**`, `data/cleaned/**`, `iris_model*.joblib` | **API** images (see below) |
+| `streamlit-ui/app.py`, `streamlit-ui/Dockerfile`, `streamlit-ui/requirements.txt` | **Streamlit** `iris-streamlit-ui` **only** (API jobs stay skipped) |
+| `streamlit-ui/README.md`, `docker-compose*.yml`, `.github/**`, k8s yaml, root README, etc. | **No image** publish |
+
+Workflow note: the `api` filter includes `!streamlit-ui/**` so UI-only Dockerfile/requirements changes do **not** match the `api` group (bare `Dockerfile` / `requirements.txt` would otherwise match every folder).
 
 ## API images (after tests pass)
 
