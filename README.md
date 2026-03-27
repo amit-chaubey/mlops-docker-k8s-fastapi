@@ -590,26 +590,26 @@ mlops-iris-ml/
 │   ├── app.py              # Streamlit app (uses IRIS_API_URL in Docker)
 │   ├── Dockerfile          # Streamlit image
 │   └── requirements.txt
-├── .github/workflows/      # CI: separate pipelines per image + smoke test
-│   ├── build-push-api.yml     # Build & push API image (model-related paths only)
-│   ├── build-push-streamlit.yml  # Build & push Streamlit image (streamlit-ui/**)
-│   └── mlops.yml              # Smoke test (docker-compose)
+├── .github/workflows/      # CI: test first; then conditional image push (mlops.yml)
+│   └── mlops.yml             # Tests + path-based Docker Hub publish after success
 ├── README.md               # This file
 └── README.txt              # Docker commands reference
 ```
 
 ---
 
-## 🔄 Build and Push Images (CI)
+## 🔄 CI: Test Then Publish Images
 
-Two **separate pipelines**; each runs only when its paths change on push to **main/master**:
+Single workflow **MLOps Pipeline** (`.github/workflows/mlops.yml`):
 
-| Pipeline | File | Triggers on |
-|----------|------|-------------|
-| **API/Model** | `build-push-api.yml` | `main.py`, `train_model.py`, `create_model.py`, `requirements.txt`, `Dockerfile`, `data/processed/**`, `data/cleaned/**`, `iris_model.joblib` |
-| **Streamlit UI** | `build-push-streamlit.yml` | `streamlit-ui/**` |
+1. **Always runs:** Docker Compose smoke test (API + Streamlit) on every **push** and **pull request** to `main` / `master`.
+2. **After tests pass** (push only): optional publish jobs run from **changed paths** and **committed model files**:
+   - **Default API** → `iris-ml-model:latest` (needs `iris_model.joblib` in repo).
+   - **RF variant** → `iris-api:rf`, `iris-api:rf-latest` (needs `iris_model_rf.joblib`; train with `python train_model.py --model all` or `rf`).
+   - **SVC variant** → `iris-api:svc` (needs `iris_model_svc.joblib`).
+   - **Streamlit** → `iris-streamlit-ui:latest` when `streamlit-ui/app.py`, `Dockerfile`, or `requirements.txt` change (not `streamlit-ui/README.md` alone).
 
-K8s, observability, monitoring, `data/raw/**`, pipeline config, README, etc. do **not** trigger any image build.
+K8s, observability, `data/raw/**`, README-only changes, etc. do **not** trigger API/Streamlit builds.
 
 **Required repo secrets:** `DOCKERHUB_USERNAME`, `DOCKERHUB_TOKEN` (Settings → Secrets and variables → Actions).
 

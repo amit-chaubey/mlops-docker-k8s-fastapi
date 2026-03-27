@@ -2,9 +2,10 @@ from fastapi import FastAPI
 from pydantic import BaseModel
 import joblib
 import numpy as np
+import os
 
-# Load model
-model = joblib.load("iris_model.joblib")
+MODEL_PATH = os.getenv("MODEL_PATH", "iris_model.joblib")
+model = joblib.load(MODEL_PATH)
 
 class_names = np.array(["setosa", "versicolor", "virginica"])
 
@@ -42,4 +43,4 @@ def predict(data: IrisRequest):
 
     return {
         "prediction": class_names[int(prediction)]
-    }
+        }

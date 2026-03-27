@@ -1,0 +1,12 @@
+.git
+.gitignore
+.github
+README.md
+README.txt
+*.yaml
+*.yml
+streamlit-ui/
+__pycache__/
+Dockerfile
+train_model.py
+create_model.py
